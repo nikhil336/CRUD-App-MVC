@@ -14,7 +14,7 @@ namespace CRUD_App_Project.Controllers
 
         public ActionResult Index()
         {
-            return View(_context.Departments);
+            return View(_context.Departments.Count() == 0 ? null : _context.Departments);
         }
         public ActionResult Create()
         {
@@ -50,7 +50,7 @@ namespace CRUD_App_Project.Controllers
                 dept.Description = department.Description;
                 dept.DeptName = department.DeptName;
                 _context.SaveChanges();
-                return RedirectToAction("Index", "Employee");
+                return RedirectToAction("Index", "Department");
             }
             catch (Exception e)
             {
@@ -63,6 +63,13 @@ namespace CRUD_App_Project.Controllers
             try
             {
                 var dept = _context.Departments.FirstOrDefault(d => d.Id == id);
+                var employees = _context.Employees.Where(e => e.DepartmentId == dept.Id).ToList();
+                foreach (var employee in employees)
+                {
+                    var salary = _context.Salaries.FirstOrDefault(s => s.Id == employee.Id);
+                    _context.Salaries.Remove(salary);
+                    _context.Employees.Remove(employee);
+                }
                 _context.Departments.Remove(dept);
                 _context.SaveChanges();
                 return RedirectToAction("Index", "Department");

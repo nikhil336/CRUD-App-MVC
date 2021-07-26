@@ -34,7 +34,8 @@ namespace CRUD_App_Project.Controllers
                     return View();
                 }
 
-                employee.DepartmentId = department.Id;
+                employee.Department = department;
+                employee.Department.Id = department.Id;
                 _context.Salaries.Add(employee.Salary);
                 _context.Employees.Add(employee);
                 _context.SaveChanges();
@@ -67,7 +68,7 @@ namespace CRUD_App_Project.Controllers
                 var salary = _context.Salaries.FirstOrDefault(e => e.Id == employee.Id);
                 var emp = _context.Employees.FirstOrDefault(e => e.Id == employee.Id);
                 salary.SalaryAmount = employee.Salary.SalaryAmount;
-                emp.DepartmentId = employee.DepartmentId;
+                emp.DepartmentId = department.Id;
                 emp.Address = employee.Address;
                 emp.DOJ = employee.DOJ;
                 emp.Email = employee.Email;
@@ -105,7 +106,7 @@ namespace CRUD_App_Project.Controllers
             try
             {
                 var context = _context.Employees.Include("Salary").Include("Department");
-                return context == null ? null : context.OrderByDescending(v => v.Salary.SalaryAmount).ThenBy(v => v.Name);
+                return context.Count() == 0 ? null : context.OrderByDescending(v => v.Salary.SalaryAmount).ThenBy(v => v.Name);
             }
             catch(Exception e)
             {
