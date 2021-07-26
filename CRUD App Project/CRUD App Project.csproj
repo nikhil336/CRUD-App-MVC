@@ -138,6 +138,7 @@
       <DependentUpon>202107261054220_Initial-v1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\CustomExceptionFilter.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Employee.cs" />

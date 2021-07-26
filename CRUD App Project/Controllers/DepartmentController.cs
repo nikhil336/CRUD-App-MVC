@@ -7,6 +7,7 @@ using CRUD_App_Project.Models;
 
 namespace CRUD_App_Project.Controllers
 {
+    [CustomExceptionFilter]
     public class DepartmentController : Controller
     {
         private DataContext _context = new DataContext();
@@ -23,9 +24,16 @@ namespace CRUD_App_Project.Controllers
         [HttpPost]
         public ActionResult Create(Department department)
         {
-            _context.Departments.Add(department);
-            _context.SaveChanges();
-            return RedirectToAction("Index","Employee");
+            try
+            {
+                _context.Departments.Add(department);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Employee");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public ActionResult Update(int Id)
@@ -36,19 +44,33 @@ namespace CRUD_App_Project.Controllers
         [HttpPost]
         public ActionResult Update(Department department)
         {
-            var dept = _context.Departments.FirstOrDefault(d => d.Id == department.Id);
-            dept.Description = department.Description;
-            dept.DeptName = department.DeptName;
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Employee");
+            try
+            {
+                var dept = _context.Departments.FirstOrDefault(d => d.Id == department.Id);
+                dept.Description = department.Description;
+                dept.DeptName = department.DeptName;
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Employee");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public ActionResult Delete(int id)
         {
-            var dept = _context.Departments.FirstOrDefault(d => d.Id == id);
-            _context.Departments.Remove(dept);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "Department");
+            try
+            {
+                var dept = _context.Departments.FirstOrDefault(d => d.Id == id);
+                _context.Departments.Remove(dept);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Department");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

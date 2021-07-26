@@ -7,6 +7,7 @@ using CRUD_App_Project.Models;
 
 namespace CRUD_App_Project.Controllers
 {
+    [CustomExceptionFilter]
     public class EmployeeController : Controller
     {
         private DataContext _context = new DataContext();
@@ -23,19 +24,26 @@ namespace CRUD_App_Project.Controllers
         [HttpPost]
         public ActionResult Create(Employee employee)
         {
-            var department = _context.Departments.FirstOrDefault(c => c.DeptName.Equals(employee.Department.DeptName.ToUpper()));
-
-            if (department == null)
+            try
             {
-                ModelState.AddModelError(nameof(employee.Department.DeptName), "Enter valid Department name");
-                return View();
-            }
+                var department = _context.Departments.FirstOrDefault(c => c.DeptName.Equals(employee.Department.DeptName.ToUpper()));
 
-            employee.DepartmentId = department.Id;
-            _context.Salaries.Add(employee.Salary);
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
-            return View("Index", GetAllEmployees());
+                if (department == null)
+                {
+                    ModelState.AddModelError(nameof(employee.Department.DeptName), "Enter valid Department name");
+                    return View();
+                }
+
+                employee.DepartmentId = department.Id;
+                _context.Salaries.Add(employee.Salary);
+                _context.Employees.Add(employee);
+                _context.SaveChanges();
+                return View("Index", GetAllEmployees());
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public ActionResult Update(int id)
@@ -46,42 +54,63 @@ namespace CRUD_App_Project.Controllers
         [HttpPost]
         public ActionResult Update(Employee employee)
         {
-            var department = _context.Departments.FirstOrDefault(c => c.DeptName.Equals(employee.Department.DeptName.ToUpper()));
-
-            if (department == null)
+            try
             {
-                ModelState.AddModelError(nameof(employee.Department.DeptName), "Enter valid Department name");
-                return View(employee);
-            }
+                var department = _context.Departments.FirstOrDefault(c => c.DeptName.Equals(employee.Department.DeptName.ToUpper()));
 
-            var salary = _context.Salaries.FirstOrDefault(e => e.Id == employee.Id);
-            var emp = _context.Employees.FirstOrDefault(e => e.Id == employee.Id);
-            salary.SalaryAmount = employee.Salary.SalaryAmount;
-            emp.DepartmentId = employee.DepartmentId;
-            emp.Address = employee.Address;
-            emp.DOJ = employee.DOJ;
-            emp.Email = employee.Email;
-            emp.Mobile = employee.Mobile;
-            emp.Name = employee.Name;
-            _context.SaveChanges();
-            return RedirectToAction("Index", GetAllEmployees());
+                if (department == null)
+                {
+                    ModelState.AddModelError(nameof(employee.Department.DeptName), "Enter valid Department name");
+                    return View(employee);
+                }
+
+                var salary = _context.Salaries.FirstOrDefault(e => e.Id == employee.Id);
+                var emp = _context.Employees.FirstOrDefault(e => e.Id == employee.Id);
+                salary.SalaryAmount = employee.Salary.SalaryAmount;
+                emp.DepartmentId = employee.DepartmentId;
+                emp.Address = employee.Address;
+                emp.DOJ = employee.DOJ;
+                emp.Email = employee.Email;
+                emp.Mobile = employee.Mobile;
+                emp.Name = employee.Name;
+                _context.SaveChanges();
+                return RedirectToAction("Index", GetAllEmployees());
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public ActionResult Delete(int id)
         {
-            var salary = _context.Salaries.FirstOrDefault(e => e.Id == id);
-            var emp = _context.Employees.FirstOrDefault(e => e.Id == id);
-            _context.Salaries.Remove(salary);
-            _context.Employees.Remove(emp);
-            _context.SaveChanges();
-            return RedirectToAction("Index", GetAllEmployees());
+            try
+            { 
+                var salary = _context.Salaries.FirstOrDefault(e => e.Id == id);
+                var emp = _context.Employees.FirstOrDefault(e => e.Id == id);
+                _context.Salaries.Remove(salary);
+                _context.Employees.Remove(emp);
+                _context.SaveChanges();
+                return RedirectToAction("Index", GetAllEmployees());
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         [NonAction]
         public IEnumerable<Employee> GetAllEmployees()
         {
-            var context = _context.Employees.Include("Salary").Include("Department");
-            return context == null ? null : context.OrderByDescending(v => v.Salary.SalaryAmount).ThenBy(v => v.Name);
+            try
+            {
+                var context = _context.Employees.Include("Salary").Include("Department");
+                return context == null ? null : context.OrderByDescending(v => v.Salary.SalaryAmount).ThenBy(v => v.Name);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
     }
