@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CRUD_App_Project.Models;
+
+namespace CRUD_App_Project.Controllers
+{
+    public class DepartmentController : Controller
+    {
+        private DataContext _context = new DataContext();
+
+        public ActionResult Index()
+        {
+            return View(_context.Departments);
+        }
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Department department)
+        {
+            _context.Departments.Add(department);
+            _context.SaveChanges();
+            return RedirectToAction("Index","Employee");
+        }
+
+        public ActionResult Update(int Id)
+        {
+            return View(_context.Departments.FirstOrDefault(d => d.Id == Id));
+        }
+
+        [HttpPost]
+        public ActionResult Update(Department department)
+        {
+            var dept = _context.Departments.FirstOrDefault(d => d.Id == department.Id);
+            dept.Description = department.Description;
+            dept.DeptName = department.DeptName;
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Employee");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var dept = _context.Departments.FirstOrDefault(d => d.Id == id);
+            _context.Departments.Remove(dept);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Department");
+        }
+    }
+}

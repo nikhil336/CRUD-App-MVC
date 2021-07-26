@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CRUD_App_Project.Models.Department>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Department List</h2>
+
+<p>@Html.ActionLink("Add Department", "Create")</p>
+
+@if (Model != null)
+{
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.DeptName)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.DeptName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>
+                    @Html.ActionLink("Update", "Update", new { id = item.Id })
+                    @Html.ActionLink("Delete", "Delete",
+                   new { confirm = true, id = item.Id },
+                   new { onclick = "return confirm('Do you really want to delete this department info?')" }
+                   )
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>List is Empty!</p>
+}
+
+
+
